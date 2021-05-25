@@ -1,50 +1,42 @@
 <?php
-namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+namespace App\Console;
 
-class TestCronJob extends Command
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+
+class Kernel extends ConsoleKernel
 {
     /**
-     * The name and signature of the console command.
+     * The Artisan commands provided by your application.
      *
-     * @var string
+     * @var array
      */
-
-
-    protected $signature = 'test-job';
+    protected $commands = [
+        //
+    ];
 
     /**
-     * The console command description.
+     * Define the application's command schedule.
      *
-     * @var string
-     */
-    protected $description = 'Send the push notification every one minute';
-
-    /**
-     * Create a new command instance.
-     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    public function __construct()
+    protected function schedule(Schedule $schedule)
     {
-        parent::__construct();
+        $schedule->command('test-job')
+            ->weeklyOn(2, '3:15');
     }
 
     /**
-     * Execute the console command.
+     * Register the commands for the application.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle()
+    protected function commands()
     {
-        $time_start = microtime(true);
-        Log::info( $this->signature.' started');
-        echo($this->signature.' started'). PHP_EOL;
+        $this->load(__DIR__.'/Commands');
 
-        $time_end = microtime(true);
-        Log::info($this->signature.' finished | took ' . ($time_end - $time_start) . 's');
-        echo($this->signature.' finished | took ' . ($time_end - $time_start) . 's'). PHP_EOL;
+        require base_path('routes/console.php');
     }
 }
